@@ -1,5 +1,7 @@
 import java.io.Serializable;
 import java.util.ArrayList;
+
+
 public class LBA implements Serializable {
 
 	ArrayList<String> knowledge = new ArrayList<String>();

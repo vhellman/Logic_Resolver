@@ -1,15 +1,17 @@
+package engine;
+
 public class Literal
 {
-    private char value_;
+    private char symbol_;
     private boolean isPositive_;
 
-    public Literal( char theChar, boolean positive ){
-        value_ = theChar;
+    public Literal( char theSymbol, boolean positive ){
+        symbol_ = theSymbol;
         isPositive_= positive;
     }
 
-    public char getValue() {
-        return value_;
+    public char getSymbol() {
+        return symbol_;
     }
 
     public boolean isPositive() {
@@ -20,7 +22,9 @@ public class Literal
         isPositive_ = positive;
     }
 
-    public void setValue_(char value) {
-        this.value_ = value;
+    public void setSymbol(char value) {
+        this.symbol_ = value;
     }
 }
+
+

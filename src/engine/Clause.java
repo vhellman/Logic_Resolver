@@ -1,3 +1,6 @@
+package engine;
+
+
 import java.util.ArrayList;
 
 public class Clause {
@@ -50,11 +53,10 @@ public class Clause {
 		return toString.toString();
 	}
 	/*
-		Hmm, den är löst... men jag tror det ligger i fel klass? Vi borde returna en lista med Clauses va?
-		Hmmm, igen... vid närmare eftertanke så har jag nog löst fel funktion. Får kolla över den sen.
+		Hmm, den är INTE löst. och Ligger i fel klass?
 
 	 */
-	public void resolve(Clause B) {
+	public void resolve(Clause B) { //rewrite this, it is not fcking ok! :)
 
 		String newClause = "";
 		String newClauseSign = "";

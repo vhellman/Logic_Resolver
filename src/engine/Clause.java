@@ -10,19 +10,25 @@ public class Clause {
 	ArrayList<Character> variables = new ArrayList<Character>(); // element 0 could be A
 	ArrayList<Boolean> sign = new ArrayList<Boolean>();  // corresponds to the same element in variables.
 
+    ArrayList<Literal> literals = new ArrayList<Literal>();
+
 	public Clause(String string, ArrayList<Character> vars, ArrayList<Boolean> truths){
 	this.clause = string;	// clause as a string
 	
 		for(int i = 0; i < vars.size(); ++i){
 			this.variables.add(vars.get(i));
 			this.sign.add(truths.get(i));
+			this.literals.add(new Literal(vars.get(i), truths.get(i)));
 		}
 	}
 
 	public String toString(){
 		return this.clause;
 	}
-	
+
+	/** TODO : flagged for removal
+     */
+
 	public String elementToString(int index){
 		
 		String str = "";
@@ -33,7 +39,27 @@ public class Clause {
 		
 		return str;
 	}
-	
+
+	public void updateClause(){
+
+	    StringBuilder sb = new StringBuilder("(");
+
+	    for(int i = 0; i < literals.size();++i){
+	        if(literals.get(i).isPositive()){
+	            sb.append(literals.get(i).getSymbol() + "|");
+            }
+            else{
+	            sb.append("-" + literals.get(i).getSymbol() + "|");
+            }
+        }
+        sb.deleteCharAt(sb.lastIndexOf("|"));
+        sb.append(")");
+        clause = sb.toString();
+    }
+
+    /** TODO : flagged for removal
+     */
+
 	public static String convertToString(ArrayList<Character> chars, ArrayList<Boolean> signs){
 		
 		StringBuilder toString = new StringBuilder("(");
@@ -55,6 +81,7 @@ public class Clause {
 	/*
 		Hmm, den är INTE löst. och Ligger i fel klass?
 
+         TODO: rewrite to work with new system
 	 */
 	public void resolve(Clause B) { //rewrite this, it is not fcking ok! :)
 
@@ -74,6 +101,9 @@ public class Clause {
 			}
 		}
 	}
+
+    /** TODO : flagged for removal
+     */
 
 	public static String genString(ArrayList<Character> str){
 		StringBuilder stb = new StringBuilder("(");
@@ -96,7 +126,10 @@ public class Clause {
 	 * factor will find this redundant and will change the clause to (A)
 	 * Output: Factored and negated clauses
 	 * */
-	
+    /** TODO : flagged for removal
+     */
+
+
 	public ArrayList<Clause> factor(ArrayList<Clause> statements){ //				used in resolution, remove duplicates
 		
 		if(statements.size() == 2){ // ensure there are only two clauses
@@ -107,21 +140,81 @@ public class Clause {
 				
 			}
 		}
-		
-		
-		
+
 		return newClauses;
 		}
 		return statements;
 	}
-	
+
+	public void factor2(){
+
+	    for(int i = 0; i < literals.size(); ++i){
+            for(int j = literals.size(); j > i; --j){
+                if(factorCheckMatch(i,j)){
+                    System.out.println("Literals :" + i + " and " + j + " are duplicates. Flagged for removal");
+                    deleteLiteral(j); // favor keeping the item to the left, i.e the first occurrence
+                }
+            }
+        }
+
+
+	}
+
+	public boolean factorCheckMatch(int i, int j){
+	    return literals.get(i).getSymbol() == literals.get(j).getSymbol() &&
+                literals.get(i).isPositive() == literals.get(j).isPositive();
+    }
+    /** TODO : flagged for removal
+     */
 	public static Boolean negationCheckMatch(Character a, Character b){
 		if(a == b){
 			return true;
 		}
 		return false;
 	}
-	
+
+	/* use on current clause to handle negation
+	* 2 loops, one from the start and one from the end, since the clause is a mix of two clauses, more likely
+	* to find duplicates near the end
+	*
+	* */
+
+	public Boolean negationCheckMatch2(int i, int j){
+
+        return  literals.get(i).getSymbol() == literals.get(j).getSymbol() &&
+                literals.get(i).isPositive() != literals.get(j).isPositive();
+    }
+//  A -B C A -C
+	public void negation2(){ // is to replace current function 'negation'
+
+        for(int i = 0; i < literals.size();++i){
+		    for(int j = literals.size(); j > i; --j){
+                if(negationCheckMatch2(i,j) && i != j){
+                    System.out.println("Literals :" + i + " and " + j + " are negating each other. Flagged for removal");
+                    deleteLiteralPair(i,j);
+                }
+            }
+        }
+	}
+
+	/*  used in factor and negation respectively
+	*
+	* */
+
+	public void deleteLiteral(int j){
+	    literals.remove(j);
+	    updateClause();
+    }
+
+	public void deleteLiteralPair(int i, int j){
+	    literals.remove(i);
+        literals.remove(j);
+        updateClause();
+    }
+
+    /** TODO : flagged for removal
+     */
+
 	public void negation(Clause b){  // used in factor, remove negated elements i.e A and -A
 
 		Boolean flag = false;
@@ -151,8 +244,12 @@ public class Clause {
 			}
 		}	
 	}
-	
-	
+
+    /** TODO: rewrite slightly to work with literals
+     *
+     *
+     */
+    
 	public static ArrayList<Clause> genClauses(){ // generates two clauses (A|-B|C) set to TTF, (A|-C) set to TT
 		ArrayList<Clause> clauses = new ArrayList<Clause>();
 		

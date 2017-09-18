@@ -118,10 +118,36 @@ public class Clause {
 	/*
 		Hmm, den är INTE löst. och Ligger i fel klass?
 
-         TODO: rewrite to work with new system
-	 */
-	public void resolve(Clause B) { //rewrite this, it is not fcking ok! :)
+         TODO: Add insert funciton to insert literal into clauses? So we can write clause.insert(Literal) instead?
 
+	 */
+	public Clause resolve(Clause B) { //rewrite this, it is not fcking ok! :)
+        Clause resolvent = null; // = new Clause();
+        Literal litA, litB;
+
+        for(int i = 0 ; i < literals.size() ; i++){
+            for( int j = 0 ; j < B.literals.size() ; j++ ){
+                litA = literals.get(i);
+                litB = B.literals.get(j);
+
+
+                if (litA.getSymbol() == litB.getSymbol() && litA.isPositive() != litB.isPositive() ) continue; // case they cancel: move along and don't add
+
+                if ( litA.getSymbol() == litB.getSymbol() )
+                {
+                    resolvent.literals.add(litA); //if they are equal, they do not cancel => add anyone of them
+                }
+                else{
+                    resolvent.literals.add(litA);
+                    resolvent.literals.add(litB);
+                }
+            }
+        }
+
+        return resolvent;
+
+
+	/*
 		String newClause = "";
 		String newClauseSign = "";
 
@@ -137,6 +163,7 @@ public class Clause {
 				}
 			}
 		}
+	*/
 	}
 
     /** TODO : flagged for removal

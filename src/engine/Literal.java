@@ -18,7 +18,7 @@ public class Literal
         return isPositive_;
     }
 
-    public void setPositive_(boolean positive) {
+    public void setPositive(boolean positive) {
         isPositive_ = positive;
     }
 

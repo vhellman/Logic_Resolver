@@ -1,6 +1,9 @@
 package engine;
 
 
+import com.sun.org.apache.bcel.internal.generic.GOTO;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Clause {
@@ -22,7 +25,31 @@ public class Clause {
 		}
 	}
 
-	public String toString(){
+	public Clause(Literal l){
+	    this.literals.add(l);
+	    updateClause();
+    }
+
+	public Clause(ArrayList<Literal> l){
+	    for(int i = 0; i<l.size(); ++i){
+	        this.literals.add(l.get(i));
+        }
+        updateClause();
+    }
+
+    public void addLiteral(Literal l){
+        this.literals.add(l);
+        updateClause();
+    }
+
+    public void addLiterals(ArrayList<Literal> l){
+        for(int i = 0; i < l.size(); ++i){
+            this.literals.add(l.get(i));
+        }
+        updateClause();
+    }
+
+    public String toString(){
 		return this.clause;
 	}
 
@@ -78,6 +105,16 @@ public class Clause {
 		
 		return toString.toString();
 	}
+    /* TODO: fix function names once old ones are pruned
+    * */
+	public Clause resolve2(Clause B){
+	    Clause resolvent = new Clause(this.literals);
+        resolvent.addLiterals(B.literals); // Clause is now like (A|-B|C|A|-C)
+        resolvent.negation2();             // Clause will be updated to (A|-B|A) TODO: remove '2'
+        resolvent.factor2();               // Clause will be updated to (A|-B). Done. TODO: remove '2'
+	    return resolvent;
+    }
+
 	/*
 		Hmm, den är INTE löst. och Ligger i fel klass?
 
@@ -149,10 +186,12 @@ public class Clause {
 	public void factor2(){
 
 	    for(int i = 0; i < literals.size(); ++i){
-            for(int j = literals.size(); j > i; --j){
+            for(int j = literals.size()-1; j > i; --j){
+               // System.out.println("Factor. i and j: " + i + " " + j);
                 if(factorCheckMatch(i,j)){
                     System.out.println("Literals :" + i + " and " + j + " are duplicates. Flagged for removal");
                     deleteLiteral(j); // favor keeping the item to the left, i.e the first occurrence
+                    --j;
                 }
             }
         }
@@ -161,8 +200,8 @@ public class Clause {
 	}
 
 	public boolean factorCheckMatch(int i, int j){
-	    return literals.get(i).getSymbol() == literals.get(j).getSymbol() &&
-                literals.get(i).isPositive() == literals.get(j).isPositive();
+	    return this.literals.get(i).getSymbol() == this.literals.get(j).getSymbol() &&
+                this.literals.get(i).isPositive() == this.literals.get(j).isPositive();
     }
     /** TODO : flagged for removal
      */
@@ -187,11 +226,16 @@ public class Clause {
 //  A -B C A -C
 	public void negation2(){ // is to replace current function 'negation'
 
+        //System.out.println("literals size: " + literals.size());
+
         for(int i = 0; i < literals.size();++i){
-		    for(int j = literals.size(); j > i; --j){
-                if(negationCheckMatch2(i,j) && i != j){
-                    System.out.println("Literals :" + i + " and " + j + " are negating each other. Flagged for removal");
-                    deleteLiteralPair(i,j);
+		    for(int j = literals.size()-1; j > i; --j){
+		        //System.out.println("i and j: " + i + " , " + j);
+                if(negationCheckMatch2(i,j)){
+                    //System.out.println("Literals : " + literals.get(i).getSymbol() + " with index: " + i + " and " + literals.get(j).getSymbol() + " with index: " + j + " are negating each other. Flagged for removal");
+                    this.deleteLiteralPair(i,j);
+                    j=literals.size();
+                    i-=1;
                 }
             }
         }
@@ -207,8 +251,11 @@ public class Clause {
     }
 
 	public void deleteLiteralPair(int i, int j){
-	    literals.remove(i);
-        literals.remove(j);
+
+	    //System.out.println("deletePair: size " + this.literals.size());
+	    this.literals.remove(j);
+	    this.literals.remove(i);
+        //System.out.println("deletePair: size after delete " + this.literals.size());
         updateClause();
     }
 
@@ -249,7 +296,32 @@ public class Clause {
      *
      *
      */
-    
+
+    public static ArrayList<Clause> generateClauses(){
+        ArrayList<Clause> clauses = new ArrayList<Clause>();
+
+        Literal a = new Literal('A', true);
+        Literal b = new Literal('B', false);
+        Literal c = new Literal('C', true);
+
+        Clause clause1 = new Clause(a);
+        clause1.addLiteral(b);
+        clause1.addLiteral(c);
+
+        Literal a2 = new Literal('A', true);
+        Literal c2 = new Literal('C', false);
+
+        Clause clause2 = new Clause(a2);
+        clause2.addLiteral(c2);
+
+        clauses.add(clause1);
+        clauses.add(clause2);
+        return clauses;
+    }
+
+    /*TODO: Flagged for removal
+    * */
+
 	public static ArrayList<Clause> genClauses(){ // generates two clauses (A|-B|C) set to TTF, (A|-C) set to TT
 		ArrayList<Clause> clauses = new ArrayList<Clause>();
 		

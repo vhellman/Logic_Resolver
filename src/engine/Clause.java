@@ -59,8 +59,22 @@ public class Clause {
         resolvent.addLiterals(B.literals); // Clause is now like (A|-B|C|A|-C)
         resolvent.negation2();             // Clause will be updated to (A|-B|A) TODO: remove '2'
         resolvent.factor2();               // Clause will be updated to (A|-B). Done. TODO: remove '2'
+        // TODO: add internal sort
 	    return resolvent;
     }
+
+    public void sortLiteral(){
+
+    }
+
+
+
+    // 0 1 2 3 4 5
+    // 0 1 2 3 4 5
+
+    // 0,1 0,2 0,3 0,4 0,5
+    // 4,5
+
 
 	/*	Input: ArrayList<Clause> containing two clauses i.e (A|B) and (A|-B)
 	 * Factor will first call negation to see if there's elements that cancel each other. 
@@ -174,7 +188,7 @@ public class Clause {
     }
 
     public static ArrayList<Clause> generateMoreClauses(){
-
+/*
         ArrayList<Clause> moreClauses = new ArrayList<Clause>();
 
         Literal a = new Literal('A', true);
@@ -209,6 +223,35 @@ public class Clause {
         moreClauses.add(clause2);
         moreClauses.add(clause3);
         moreClauses.add(clause4);
+
+        return moreClauses;*/
+
+        ArrayList<Clause> moreClauses = new ArrayList<Clause>();
+
+
+        Literal a = new Literal('A' , true);
+        Literal a1 = new Literal('A', false);
+        Literal b = new Literal('B', true);
+        Literal b1 = new Literal('B', false);
+        Literal c = new Literal ('C', true);
+        Literal c1 = new Literal('C', false);
+        //Literal e = new Literal(' ', false);
+
+        Clause clas1 = new Clause(a1);
+        clas1.addLiteral(b);
+        moreClauses.add(clas1);
+
+        Clause clas2 = new Clause(b1);
+        clas2.addLiteral(c);
+        clas2.addLiteral(a);
+        moreClauses.add(clas2);
+
+        Clause clas3 = new Clause(c1);
+        clas3.addLiteral(b);
+        moreClauses.add(clas3);
+
+        Clause clas4 = new Clause(b1);
+        moreClauses.add(clas4);
 
         return moreClauses;
     }

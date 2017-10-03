@@ -30,55 +30,40 @@ public class Engine {
 
        temp = runResolveProgram(moreClauses);
 
-       System.out.print(temp);
+       System.out.print("Proof by contradiction says that the statement is: " + temp + ". \n\n\n");
 
 
    }
 
     public static boolean runResolveProgram( ArrayList<Clause> clauses ){ //add query , clauses should be KB + notQuery
 
-        //int attempts = 5;
-        //int current = 0;
+        Clause clasI, clasJ;
+        ArrayList<Clause> newClauses = new ArrayList<>(); //newClauses -> {}
 
-        //int[] indices;
-        //ArrayList<Clause> resolvents = new ArrayList<Clause>();
-        // try making new resolvents until no more can be created. Stop after too many unsuccessful attempts
+        for( int i = 0 ; i < (clauses.size() - 1)  ; ++i ) {
 
-        ArrayList<Clause> newClauses = new ArrayList<>();
-
-       /*
-       while(current < attempts){
-           //indices = pickIndices(clauses);
-           Clause resolvent = clauses.get(indices[0]).resolve2(clauses.get(indices[1]));
-           if(resolvents.contains(resolvent)){
-               current++;
-           }else{
-               resolvents.add(resolvent);
-               System.out.println("Added resolvent to knowledgebase: " + resolvent.toString());
-           }
-       }*/
-
-        for( int i = 0 ; i < (clauses.size() - 1)  ; ++i ){
+            clasI = clauses.get(i); //clause Ci
             for( int j = i+1 ; j < clauses.size()  ; ++j ){
 
-                Clause resolvent = clauses.get(i).resolve2( clauses.get(j) );
+                clasJ = clauses.get(j); //clause Cj
 
-                if ( resolvent.toString().equals("") ) {
-                    return true;
-                }
+                Clause resolvent = clasI.resolve2(clasJ); //resolve for each pair of clauses
 
-                if ( !newClauses.contains(resolvent) ) {
-                    newClauses.add(resolvent);
-                }
+                if ( resolvent.toString().equals("") ) { return true; }//if empty clause is found: return true
+
+                if ( !newClauses.contains(resolvent) ) { newClauses.add(resolvent); } //new = new U resolvents
             }
         }
+
+        /*
         System.out.println("new Clauses:");
         printClauses(newClauses);
         System.out.println(" \n ");
-        if( clauses.containsAll( newClauses ) ){
-            return false;
-        }
-        else {
+        */
+
+        if( clauses.containsAll( newClauses ) ){ return false; } //if newClauses is a sub-set of clauses: return false
+
+        else { //else clauses = clauses U newClauses
             clauses = addNewClauses(clauses, newClauses);
             System.out.println("KB:");
             printClauses( clauses );
@@ -88,7 +73,7 @@ public class Engine {
     }
 
 
-    public static ArrayList<Clause> addNewClauses(ArrayList<Clause> KB, ArrayList<Clause> newClauses ){
+    public static ArrayList<Clause> addNewClauses( ArrayList<Clause> KB, ArrayList<Clause> newClauses ){
 
         Clause tempClause;
 
@@ -128,7 +113,7 @@ public class Engine {
        return resolvents;
    }
 */
-    static int[] pickIndices(ArrayList<Clause> clauses){
+/*    static int[] pickIndices(ArrayList<Clause> clauses){
 
        Random rng = new Random();
 
@@ -139,7 +124,7 @@ public class Engine {
            j = rng.nextInt(clauses.size());
        }
        return new int[]{i,j};
-    }
+    }*/
 
     public static void printClauses(ArrayList<Clause> clauses){
         System.out.println("Clauses: ");

@@ -39,19 +39,19 @@ public class Clause {
 
         if( !literals.isEmpty() ) {
 
-            StringBuilder sb = new StringBuilder("(");
+            StringBuilder tempClauseString = new StringBuilder("(");
 
             for (int i = 0; i < literals.size(); ++i) {
                 if (literals.get(i).isPositive()) {
-                    sb.append(literals.get(i).getSymbol() + "|");
+                    tempClauseString.append(literals.get(i).getSymbol() + "|");
                 } else {
-                    sb.append("-" + literals.get(i).getSymbol() + "|");
+                    tempClauseString.append("-" + literals.get(i).getSymbol() + "|");
                 }
             }
 
-            sb.deleteCharAt(sb.lastIndexOf("|"));
-            sb.append(")");
-            clause = sb.toString();
+            tempClauseString.deleteCharAt(tempClauseString.lastIndexOf("|"));
+            tempClauseString.append(")");
+            clause = tempClauseString.toString();
         }
         else{
             clause = "";

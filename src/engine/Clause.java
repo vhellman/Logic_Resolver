@@ -53,6 +53,9 @@ public class Clause {
             sb.append(")");
             clause = sb.toString();
         }
+        else{
+            clause = "";
+        }
     }
 
     /* TODO: fix function names once old ones are pruned

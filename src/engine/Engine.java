@@ -85,7 +85,6 @@ public class Engine {
             System.out.println("\n \n \n ");
             return runResolveProgram( clauses );
         }
-
     }
 
 

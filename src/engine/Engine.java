@@ -6,22 +6,24 @@ import java.util.Random;
 
 public class Engine {
 
-   public static void main(String args[]) throws Exception
-   {
-       boolean temp;
-       ArrayList<Clause> moreClauses = Clause.generateMoreClauses();
+    private boolean theTruth_;
+    private ArrayList<Clause> knowledgeBase_;
 
-       System.out.println("Original: ");
-       printClauses(moreClauses);
-       System.out.println("\n \n");
+    //constructor
+    public Engine( ArrayList<Clause> sentKnowledge ){
+        knowledgeBase_ = sentKnowledge;
+    }
+    //getters
+    public boolean getTheTruth() {
+        return theTruth_;
+    }
 
-       temp = doResolution(moreClauses);
+    public ArrayList<Clause> getKnowledgeBase() {
+        return knowledgeBase_;
+    }
 
-       System.out.print("Proof by contradiction says that the statement is: " + temp + ". \n\n\n");
-   }
-
-    public static boolean doResolution( ArrayList<Clause> clauses ){ //add query , clauses should be KB + notQuery
-        return runResolveProgram(clauses);
+    public void doResolution( ArrayList<Clause> clauses ){ //add query , clauses should be KB + notQuery
+        theTruth_ = runResolveProgram(clauses);
     }
 
     /******************************************************************************************************
@@ -43,16 +45,13 @@ public class Engine {
         ArrayList<Clause> newClauses = new ArrayList<>(); //newClauses -> {}
 
         for( int i = 0 ; i < (clauses.size() - 1)  ; ++i ) {
-
             clasI = clauses.get(i); //clause Ci
             for( int j = i+1 ; j < clauses.size()  ; ++j ){
-
                 clasJ = clauses.get(j); //clause Cj
 
                 Clause resolvent = clasI.resolve2(clasJ); //resolve for each pair of clauses
 
                 if ( resolvent.toString().equals("") ) { return true; }//if empty clause is found: return true
-
                 if ( !newClauses.contains(resolvent) ) { newClauses.add(resolvent); } //new = new U resolvents
             }
         }

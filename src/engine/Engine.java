@@ -75,15 +75,15 @@ public class Engine {
         System.out.println("new Clauses:");
         printClauses(newClauses);
         System.out.println(" \n ");
-        if( clauses.containsAll(newClauses ) ){
+        if( clauses.containsAll( newClauses ) ){
             return false;
         }
         else {
             clauses = addNewClauses(clauses, newClauses);
             System.out.println("KB:");
-            printClauses(clauses);
+            printClauses( clauses );
             System.out.println("\n \n \n ");
-            return runResolveProgram(clauses);
+            return runResolveProgram( clauses );
         }
 
     }

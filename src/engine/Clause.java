@@ -37,19 +37,22 @@ public class Clause {
 
 	public void updateClause(){
 
-	    StringBuilder sb = new StringBuilder("(");
+        if( !literals.isEmpty() ) {
 
-	    for(int i = 0; i < literals.size();++i){
-	        if(literals.get(i).isPositive()){
-	            sb.append(literals.get(i).getSymbol() + "|");
+            StringBuilder sb = new StringBuilder("(");
+
+            for (int i = 0; i < literals.size(); ++i) {
+                if (literals.get(i).isPositive()) {
+                    sb.append(literals.get(i).getSymbol() + "|");
+                } else {
+                    sb.append("-" + literals.get(i).getSymbol() + "|");
+                }
             }
-            else{
-	            sb.append("-" + literals.get(i).getSymbol() + "|");
-            }
+
+            sb.deleteCharAt(sb.lastIndexOf("|"));
+            sb.append(")");
+            clause = sb.toString();
         }
-        sb.deleteCharAt(sb.lastIndexOf("|"));
-        sb.append(")");
-        clause = sb.toString();
     }
 
     /* TODO: fix function names once old ones are pruned
@@ -123,6 +126,7 @@ public class Clause {
                     //System.out.println("Literals : " + literals.get(i).getSymbol() + " with index: " + i + " and " + literals.get(j).getSymbol() + " with index: " + j + " are negating each other. Flagged for removal");
                     this.deleteLiteralPair(i,j);
                     j=literals.size();
+
                 }
             }
         }

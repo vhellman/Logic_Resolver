@@ -6,89 +6,83 @@ import java.util.Random;
 
 public class Engine {
 
-   public static void main(String args[]) throws Exception{
-/*
-      ArrayList<Clause> clauses = Clause.generateClauses();
-      ArrayList<Clause> moreClauses = Clause.generateMoreClauses();
+    private boolean theTruth_;
+    private ArrayList<Clause> knowledgeBase_;
 
-      System.out.println("Clauses before resolve: " + clauses.get(0).toString() + " and " + clauses.get(1).toString());
+    //constructor
+    public Engine( ArrayList<Clause> sentKnowledge ){
+        knowledgeBase_ = sentKnowledge;
+    }
+    //getters
+    public boolean getTheTruth() {
+        return theTruth_;
+    }
 
-      Clause theClause = clauses.get(0).resolve2(clauses.get(1));
+    public ArrayList<Clause> getKnowledgeBase() {
+        return knowledgeBase_;
+    }
 
-      System.out.println("Resolvent: " + theClause.toString());
+    public void doResolution( ArrayList<Clause> clauses ){ //add query , clauses should be KB + notQuery
+        theTruth_ = runResolveProgram(clauses);
+    }
 
-      ArrayList<Clause> resolvents = new ArrayList<Clause>();
-      resolvents = runResolveProgram(moreClauses);
-      printClauses(resolvents);*/
+    /******************************************************************************************************
+     *
+     *                              PRIVATE AUXILLARY FUNCTIONS
+     *
+     *****************************************************************************************************/
 
-       boolean temp;
-       ArrayList<Clause> moreClauses = Clause.generateMoreClauses();
+    /**
+     * Uses proof by contradiction to test wether a certain statement is true or not.
+     *
+     * @param clauses - the union of the knowledge base and the negation of the statement that is tested. KB U -a
+     * @return a boolean, true if there is a contradiction and false if there are no new clauses to derive.
+     */
 
-       System.out.println("Original: ");
-       printClauses(moreClauses);
-       System.out.println("\n \n");
+   private static boolean runResolveProgram(ArrayList<Clause> clauses){
 
-       temp = runResolveProgram(moreClauses);
+        Clause clasI, clasJ;
+        ArrayList<Clause> newClauses = new ArrayList<>(); //newClauses -> {}
 
-       System.out.print(temp);
-
-
-   }
-
-    public static boolean runResolveProgram( ArrayList<Clause> clauses ){ //add query , clauses should be KB + notQuery
-
-        //int attempts = 5;
-        //int current = 0;
-
-        //int[] indices;
-        //ArrayList<Clause> resolvents = new ArrayList<Clause>();
-        // try making new resolvents until no more can be created. Stop after too many unsuccessful attempts
-
-        ArrayList<Clause> newClauses = new ArrayList<>();
-
-       /*
-       while(current < attempts){
-           //indices = pickIndices(clauses);
-           Clause resolvent = clauses.get(indices[0]).resolve2(clauses.get(indices[1]));
-           if(resolvents.contains(resolvent)){
-               current++;
-           }else{
-               resolvents.add(resolvent);
-               System.out.println("Added resolvent to knowledgebase: " + resolvent.toString());
-           }
-       }*/
-
-        for( int i = 0 ; i < (clauses.size() - 1)  ; ++i ){
+        for( int i = 0 ; i < (clauses.size() - 1)  ; ++i ) {
+            clasI = clauses.get(i); //clause Ci
             for( int j = i+1 ; j < clauses.size()  ; ++j ){
+                clasJ = clauses.get(j); //clause Cj
 
-                Clause resolvent = clauses.get(i).resolve2( clauses.get(j) );
+                Clause resolvent = clasI.resolve2(clasJ); //resolve for each pair of clauses
 
-                if ( resolvent.toString().equals("") ) {
-                    return true;
-                }
-
-                if ( !newClauses.contains(resolvent) ) {
-                    newClauses.add(resolvent);
-                }
+                if ( resolvent.toString().equals("") ) { return true; }//if empty clause is found: return true
+                if ( !newClauses.contains(resolvent) ) { newClauses.add(resolvent); } //new = new U resolvents
             }
         }
+
+        /*
         System.out.println("new Clauses:");
         printClauses(newClauses);
         System.out.println(" \n ");
-        if( clauses.containsAll( newClauses ) ){
-            return false;
-        }
-        else {
-            clauses = addNewClauses(clauses, newClauses);
+        */
+
+        if( clauses.containsAll( newClauses ) ){ return false; } //if newClauses is a sub-set of clauses: return false
+
+        else { //else clauses = clauses U newClauses
+        clauses = addNewClauses(clauses, newClauses);
+            /*
             System.out.println("KB:");
             printClauses( clauses );
             System.out.println("\n \n \n ");
-            return runResolveProgram( clauses );
+            */
+        return runResolveProgram( clauses );
         }
     }
 
-
-    public static ArrayList<Clause> addNewClauses(ArrayList<Clause> KB, ArrayList<Clause> newClauses ){
+    /**
+     * Loops through the newClauses and adds all clauses that is not already known.
+     *
+     * @param KB the knowledge base
+     * @param newClauses - an set of new clauses to insert into the KB
+     * @return a union of KB and newClauses
+     */
+    private static ArrayList<Clause> addNewClauses( ArrayList<Clause> KB, ArrayList<Clause> newClauses ){
 
         Clause tempClause;
 
@@ -102,33 +96,22 @@ public class Engine {
         return KB;
     }
 
+    public static void printClauses(ArrayList<Clause> clauses){
+        System.out.println("Clauses: ");
+        for(int i = 0; i<clauses.size();++i){
+            System.out.println(clauses.get(i).toString());
+        }
+    }
+}
+/******************************************************************************************************
+ *
+ *                              NOT USED ANYMORE?
+ *
+ *****************************************************************************************************/
 
 
-/*
-   public static ArrayList<Clause> runResolveProgram(ArrayList<Clause> clauses){
 
-       int attempts = 10;
-       int current = 0;
-
-       int[] indices;
-       ArrayList<Clause> resolvents = new ArrayList<Clause>();
-       // try making new resolvents until no more can be created. Stop after too many unsuccessful attempts
-
-       while(current < attempts){
-           indices = pickIndices(clauses);
-           Clause resolvent = clauses.get(indices[0]).resolve2(clauses.get(indices[1]));
-           if(resolvents.contains(resolvent)){
-               current++;
-           }else{
-               resolvents.add(resolvent);
-               System.out.println("Added resolvent to knowledgebase: " + resolvent.toString());
-               current = 0;
-           }
-       }
-       return resolvents;
-   }
-*/
-    static int[] pickIndices(ArrayList<Clause> clauses){
+/*    static int[] pickIndices(ArrayList<Clause> clauses){
 
        Random rng = new Random();
 
@@ -139,12 +122,4 @@ public class Engine {
            j = rng.nextInt(clauses.size());
        }
        return new int[]{i,j};
-    }
-
-    public static void printClauses(ArrayList<Clause> clauses){
-        System.out.println("Clauses: ");
-        for(int i = 0; i<clauses.size();++i){
-            System.out.println(clauses.get(i).toString());
-        }
-    }
-}
+    }*/

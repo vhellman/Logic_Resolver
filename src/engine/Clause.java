@@ -167,10 +167,6 @@ public class Clause {
         //System.out.println("deletePair: size after delete " + this.literals.size());
         updateClause();
     }
-    /** TODO: rewrite slightly to work with literals
-     *
-     *
-     */
 
     public static ArrayList<Clause> generateClauses(){
         ArrayList<Clause> clauses = new ArrayList<Clause>();
@@ -194,44 +190,41 @@ public class Clause {
         return clauses;
     }
 
+    public static ArrayList<Clause> robberProblem(){
+        ArrayList<Clause> robbers = new ArrayList<Clause>();
+
+        Literal aTrue = new Literal('A', true);
+        Literal aFalse = new Literal('A', false);
+        Literal bTrue = new Literal('B', true);
+        Literal bFalse = new Literal('B', false);
+        Literal cTrue = new Literal('C', true);
+        Literal cFalse = new Literal('C', false);
+
+        Clause c1 = new Clause(aTrue);
+        c1.addLiteral(bTrue);
+        c1.addLiteral(cTrue);
+
+        Clause c2 = new Clause(aTrue);
+        c2.addLiteral(cFalse);
+
+        Clause c3 = new Clause(aTrue);
+        c3.addLiteral(bFalse);
+
+        Clause c4 = new Clause(bFalse);
+        c4.addLiteral(cTrue);
+
+        Clause c5 = new Clause(aFalse); // query
+
+        robbers.add(c1);
+        robbers.add(c2);
+        robbers.add(c3);
+        robbers.add(c4);
+        robbers.add(c5);
+
+        return robbers;
+    }
+
     public static ArrayList<Clause> generateMoreClauses(){
-/*
-        ArrayList<Clause> moreClauses = new ArrayList<Clause>();
-
-        Literal a = new Literal('A', true);
-        Literal b = new Literal('B', true);
-        Literal c = new Literal('C', true);
-
-        Clause clause1 = new Clause(a);
-        clause1.addLiteral(b);
-        clause1.addLiteral(c);
-
-        Literal a2 = new Literal('A', false);
-        Literal c2 = new Literal('C', true);
-
-        Clause clause2 = new Clause(a2);
-        clause2.addLiteral(c2);
-
-        Literal a3 = new Literal('A', true);
-        Literal c3 = new Literal('C', false);
-        Literal d = new Literal('D', true);
-
-        Clause clause3 = new Clause(a3);
-        clause3.addLiteral(c3);
-        clause3.addLiteral(d);
-
-        Literal b4 = new Literal('B', false);
-        Literal c4 = new Literal('C', false);
-
-        Clause clause4 = new Clause(b4);
-        clause4.addLiteral(c4);
-
-        moreClauses.add(clause1);
-        moreClauses.add(clause2);
-        moreClauses.add(clause3);
-        moreClauses.add(clause4);
-
-        return moreClauses;*/
 
         ArrayList<Clause> moreClauses = new ArrayList<Clause>();
 

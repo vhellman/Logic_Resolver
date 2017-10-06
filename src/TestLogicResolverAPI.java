@@ -26,7 +26,7 @@ public class TestLogicResolverAPI {
         System.out.println("Robber problem. KB: ");
         Engine.printClauses(robbers);
         System.out.println("\n\n");
-        System.out.println("Is A innocent? Let's apply resolution and find out!");
+        System.out.println("Is A guilty? Let's apply resolution and find out!");
         engine.doResolution(robbers);
         boolean answer = engine.getTheTruth();
 
